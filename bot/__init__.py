@@ -1,5 +1,6 @@
 import logging
 import time
+import os
 import telegram.ext as tg
 from bot.config import BOT_TOKEN
 

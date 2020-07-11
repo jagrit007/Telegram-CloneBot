@@ -44,6 +44,7 @@ def cloneNode(update,context):
 
 
 def main():
+    LOGGER.info("Bot Started!")
     clone_handler = CommandHandler('clone', cloneNode)
     dispatcher.add_handler(clone_handler)
     updater.start_polling()
