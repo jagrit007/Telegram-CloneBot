@@ -3,7 +3,7 @@ from telegram.update import Update
 from telegram.ext import CommandHandler, run_async
 from bot.gDrive import GoogleDriveHelper
 from bot import LOGGER, dispatcher, updater, bot
-from bot.config import BOT_TOKEN
+from bot.config import BOT_TOKEN, OWNER_ID
 from telegram.error import TimedOut, BadRequest
 
 
@@ -29,6 +29,8 @@ def start(update, context):
 
 @run_async
 def cloneNode(update,context):
+    if not update.message.from_user.id == OWNER_ID:
+        return
     args = update.message.text.split(" ",maxsplit=1)
     if len(args) > 1:
         link = args[1]

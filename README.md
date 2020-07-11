@@ -1,3 +1,14 @@
+# Why?
+For all my friends using my TDs who now need to store everything in it instead of their Drive.
+
+## Setting up config file (present in bot/config.py)
+- **BOT_TOKEN** : The telegram bot token that you get from @BotFather
+- **GDRIVE_FOLDER_ID** : This is the folder ID of the Google Drive Folder to which you want to upload all the mirrors.
+- **OWNER_ID** : The Telegram user ID (not username) of the owner of the bot (if you do not have that, send /id to @kelverbot )
+- **IS_TEAM_DRIVE** : (Optional field) Set to True if GDRIVE_FOLDER_ID is from a Team Drive else False or Leave it empty.
+- **USE_SERVICE_ACCOUNTS**: (Optional field) (Leave empty if unsure) Whether to use service accounts or not. For this to work see  "Using service accounts" section below.
+- **INDEX_URL** : (Optional field) Refer to https://github.com/maple3142/GDIndex/ The URL should not have any trailing '/'
+
 ## Getting Google OAuth API credential file
 
 - Visit the [Google Cloud Console](https://console.developers.google.com/apis/credentials)
