@@ -108,7 +108,7 @@ class GoogleDriveHelper:
 
     @retry(wait=wait_exponential(multiplier=2, min=3, max=6), stop=stop_after_attempt(5),
            retry=retry_if_exception_type(HttpError), before=before_log(LOGGER, logging.DEBUG))
-    def copyFile(self, file_id, dest_id):
+    def copyFile(self, file_id, dest_id, status):
         body = {
             'parents': [dest_id]
         }
@@ -123,11 +123,11 @@ class GoogleDriveHelper:
                     if USE_SERVICE_ACCOUNTS:
                         self.switchServiceAccount()
                         LOGGER.info(f"Got: {reason}, Trying Again.")
-                        self.copyFile(file_id, dest_id)
+                        self.copyFile(file_id, dest_id, status)
                 else:
                     raise err
 
-    def clone(self, link):
+    def clone(self, link, status):
         self.transferred_size = 0
         try:
             file_id = self.getIdFromUrl(link)
@@ -146,7 +146,7 @@ class GoogleDriveHelper:
             if not dir_id:
                 dir_id = self.create_directory(meta.get('name'), GDRIVE_FOLDER_ID)
             try:
-                result = self.cloneFolder(meta.get('name'), meta.get('name'), meta.get('id'), dir_id)
+                result = self.cloneFolder(meta.get('name'), meta.get('name'), meta.get('id'), dir_id, status)
             except Exception as e:
                 if isinstance(e, RetryError):
                     LOGGER.info(f"Total Attempts: {e.last_attempt.attempt_number}")
@@ -155,6 +155,7 @@ class GoogleDriveHelper:
                     err = str(e).replace('>', '').replace('<', '')
                 LOGGER.error(err)
                 return err
+            status.set_status(True)
             msg += f'<a href="{self.__G_DRIVE_DIR_BASE_DOWNLOAD_URL.format(dir_id)}">{meta.get("name")}</a>' \
                    f' ({get_readable_file_size(self.transferred_size)})'
             if INDEX_URL:
@@ -163,8 +164,11 @@ class GoogleDriveHelper:
         else:
             try:
                 file = self.check_file_exists(meta.get('id'), GDRIVE_FOLDER_ID)
+                if file:
+                    status.checkFileExist(True)
                 if not file:
-                    file = self.copyFile(meta.get('id'), GDRIVE_FOLDER_ID)
+                    status.checkFileExist(False)
+                    file = self.copyFile(meta.get('id'), GDRIVE_FOLDER_ID, status)
             except Exception as e:
                 if isinstance(e, RetryError):
                     LOGGER.info(f"Total Attempts: {e.last_attempt.attempt_number}")
@@ -183,7 +187,7 @@ class GoogleDriveHelper:
                 pass
         return msg
 
-    def cloneFolder(self, name, local_path, folder_id, parent_id):
+    def cloneFolder(self, name, local_path, folder_id, parent_id, status):
         page_token = None
         q = f"'{folder_id}' in parents"
         files = []
@@ -209,16 +213,24 @@ class GoogleDriveHelper:
                 current_dir_id = self.check_folder_exists(file.get('name'), parent_id)
                 if not current_dir_id:
                     current_dir_id = self.create_directory(file.get('name'), parent_id)
-                new_id = self.cloneFolder(file.get('name'), file_path, file.get('id'), current_dir_id)
+                new_id = self.cloneFolder(file.get('name'), file_path, file.get('id'), current_dir_id, status)
             else:
                 try:
                     if not self.check_file_exists(file.get('name'), parent_id):
+                        status.checkFileExist(False)
                         self.transferred_size += int(file.get('size'))
+                        status.add_size(int(file.get('size')))
+                        status.set_name(file.get('name'))
+                    else:
+                        status.checkFileExist(True)
                 except TypeError:
                     pass
                 try:
                     if not self.check_file_exists(file.get('name'), parent_id):
-                        self.copyFile(file.get('id'), parent_id)
+                        self.copyFile(file.get('id'), parent_id, status)
+                        status.checkFileExist(False)
+                    else:
+                        status.checkFileExist(True)
                     new_id = parent_id
                 except Exception as e:
                     if isinstance(e, RetryError):
@@ -273,6 +285,8 @@ class GoogleDriveHelper:
         return build('drive', 'v3', credentials=credentials, cache_discovery=False)
 
     
+    @retry(wait=wait_exponential(multiplier=2, min=3, max=6), stop=stop_after_attempt(5),
+           retry=retry_if_exception_type(HttpError), before=before_log(LOGGER, logging.DEBUG))
     def check_folder_exists(self, fileName, u_parent_id):
         fileName = clean_name(fileName)
         # Create Search Query for API request.
@@ -289,6 +303,8 @@ class GoogleDriveHelper:
                     driveid = file.get('id')
                     return driveid
     
+    @retry(wait=wait_exponential(multiplier=2, min=3, max=6), stop=stop_after_attempt(5),
+           retry=retry_if_exception_type(HttpError), before=before_log(LOGGER, logging.DEBUG))
     def check_file_exists(self, fileName, u_parent_id):
         fileName = clean_name(fileName)
         # Create Search Query for API request.
