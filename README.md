@@ -24,6 +24,15 @@ For all my friends using my TDs who now need to store everything in it instead o
 pip install google-api-python-client google-auth-httplib2 google-auth-oauthlib
 python3 generate_drive_token.py
 ```
+# Running
+- To run this bot (locally) (suggested)
+```
+python3 -m bot
+```
+- Deploying to Heroku (Optional) (Not Suitable for very big Clones!)
+
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
+
 # Using service accounts for uploading to avoid user rate limit
 For Service Account to work, you must set USE_SERVICE_ACCOUNTS=True in config file or environment variables
 Many thanks to [AutoRClone](https://github.com/xyou365/AutoRclone) for the scripts
