@@ -127,7 +127,7 @@ class GoogleDriveHelper:
                 else:
                     raise err
 
-    def clone(self, link, status):
+    def clone(self, link, status, ignoreList=[]):
         self.transferred_size = 0
         try:
             file_id = self.getIdFromUrl(link)
@@ -146,7 +146,7 @@ class GoogleDriveHelper:
             if not dir_id:
                 dir_id = self.create_directory(meta.get('name'), GDRIVE_FOLDER_ID)
             try:
-                result = self.cloneFolder(meta.get('name'), meta.get('name'), meta.get('id'), dir_id, status)
+                result = self.cloneFolder(meta.get('name'), meta.get('name'), meta.get('id'), dir_id, status, ignoreList)
             except Exception as e:
                 if isinstance(e, RetryError):
                     LOGGER.info(f"Total Attempts: {e.last_attempt.attempt_number}")
@@ -187,7 +187,7 @@ class GoogleDriveHelper:
                 pass
         return msg
 
-    def cloneFolder(self, name, local_path, folder_id, parent_id, status):
+    def cloneFolder(self, name, local_path, folder_id, parent_id, status, ignoreList=[]):
         page_token = None
         q = f"'{folder_id}' in parents"
         files = []
@@ -213,7 +213,10 @@ class GoogleDriveHelper:
                 current_dir_id = self.check_folder_exists(file.get('name'), parent_id)
                 if not current_dir_id:
                     current_dir_id = self.create_directory(file.get('name'), parent_id)
-                new_id = self.cloneFolder(file.get('name'), file_path, file.get('id'), current_dir_id, status)
+                if not str(file.get('id')) in ignoreList:
+                    new_id = self.cloneFolder(file.get('name'), file_path, file.get('id'), current_dir_id, status, ignoreList)
+                else:
+                    LOGGER.info("Ignoring FolderID from clone: " + str(file.get('id')))
             else:
                 try:
                     if not self.check_file_exists(file.get('name'), parent_id):
