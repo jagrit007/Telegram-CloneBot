@@ -29,6 +29,7 @@ def cloneNode(update,context):
         sendCloneStatus(update, context, status_class, msg, link)
         result = gd.clone(link, status_class)
         deleteMessage(context.bot, msg)
+        status_class.set_status(True)
         sendMessage(result, context.bot, update)
     else:
         sendMessage("Please Provide a Google Drive Shared Link to Clone.", bot, update)
@@ -48,6 +49,8 @@ def sendCloneStatus(update, context, status, msg, link):
                 old_text = text
         except Exception as e:
             LOGGER.error(e)
+            if str(e) == "Message to edit not found":
+                break
             sleeper(2)
             continue
     return
