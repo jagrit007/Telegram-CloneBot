@@ -7,6 +7,7 @@ from bot import LOGGER
 import json
 import logging
 import requests
+import socket
 
 from google.auth.transport.requests import Request
 from google.oauth2 import service_account
@@ -21,6 +22,7 @@ from bot.config import IS_TEAM_DRIVE, \
 from bot.fs_utils import get_mime_type
 
 logging.getLogger('googleapiclient.discovery').setLevel(logging.ERROR)
+socket.setdefaulttimeout(650) # https://github.com/googleapis/google-api-python-client/issues/632#issuecomment-541973021
 SERVICE_ACCOUNT_INDEX = 0
 
 def clean_name(name):
