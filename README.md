@@ -1,5 +1,5 @@
 # Why?
-For all my friends using my TDs who now need to store everything in it instead of their Drive.
+For all my friends using my TDs who now need to store everything in it instead of their Drive. [Need help?](https://t.me/tgclonebot)
 
 ## Setting up config file (present in bot/config.py)
 - **BOT_TOKEN** : The telegram bot token that you get from @BotFather
@@ -31,7 +31,12 @@ python3 -m bot
 ```
 - Deploying to Heroku (Optional) (Not Suitable for very big Clones!)
 
-[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://dashboard.heroku.com/new?template=https://github.com/jagrit007/Telegram-CloneBot)
+
+- Please know that after using this button, your work isn't done. You gotta [clone heroku app](https://devcenter.heroku.com/articles/git-clone-heroku-app) and add credentials.json and token.pickle (By now you would know how to make it.) and this is the perfect time to generate service accounts if you wish to use them. After it's all done, [Push changes to Heroku (Step1-2 only).](https://docs.railsbridge.org/intro-to-rails/deploying_to_heroku_again)
+
+**I'm figuring ways to avoid this step and will work this out soon. If you got any suggestion feel free to make a Pull Request**
+
 
 # Using service accounts for uploading to avoid user rate limit
 For Service Account to work, you must set USE_SERVICE_ACCOUNTS=True in config file or environment variables

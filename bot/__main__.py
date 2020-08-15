@@ -87,11 +87,21 @@ def sleeper(value, enabled=True):
     time.sleep(int(value))
     return
 
+@run_async
+def sendLogs(update, context):
+    if update.effective_message.from_user.id == OWNER_ID:
+        with open('log.txt', 'rb') as f:
+            bot.send_document(document=f, filename=f.name,
+                          reply_to_message_id=update.message.message_id,
+                          chat_id=update.message.chat_id)
+
 def main():
     LOGGER.info("Bot Started!")
     clone_handler = CommandHandler('clone', cloneNode)
     start_handler = CommandHandler('start', start)
     help_handler = CommandHandler('help', helper)
+    log_handler = CommandHandler('logs', sendLogs)
+    dispatcher.add_handler(log_handler)
     dispatcher.add_handler(start_handler)
     dispatcher.add_handler(clone_handler)
     dispatcher.add_handler(help_handler)
