@@ -5,6 +5,7 @@ For all my friends using my TDs who now need to store everything in it instead o
 - **BOT_TOKEN** : The telegram bot token that you get from @BotFather
 - **GDRIVE_FOLDER_ID** : This is the folder ID of the Google Drive Folder to which you want to clone.
 - **OWNER_ID** : The Telegram user ID (not username) of the owner of the bot (if you do not have that, send /id to @kelverbot )
+- **AUTHORISED_USERS** : The Telegram user IDs (not username) of people you wish to allow for bot access.It can also be group chat id.
 - **IS_TEAM_DRIVE** : (Optional field) Set to True if GDRIVE_FOLDER_ID is from a Team Drive else False or Leave it empty.
 - **USE_SERVICE_ACCOUNTS**: (Optional field) (Leave empty if unsure) Whether to use service accounts or not. For this to work see  "Using service accounts" section below.
 - **INDEX_URL** : (Optional field) Refer to https://github.com/maple3142/GDIndex/ The URL should not have any trailing '/'
@@ -35,7 +36,7 @@ python3 -m bot
 
 - Please know that after using this button, your work isn't done. You gotta [clone heroku app](https://devcenter.heroku.com/articles/git-clone-heroku-app) and add credentials.json and token.pickle (By now you would know how to make it.) and this is the perfect time to generate service accounts if you wish to use them. After it's all done, [Push changes to Heroku (Step1-2 only).](https://docs.railsbridge.org/intro-to-rails/deploying_to_heroku_again)
 
-**I'm figuring ways to avoid this step and will work this out soon. If you got any suggestion feel free to make a Pull Request**
+**Tip: Instead of using Termux or local machine, use [repl.it](https://repl.it/), atleast it won't throw any errors in installing Python requirements. From [repl.it](https://repl.it/) you could push to a private GitHub repo and attach that to Heroku.**
 
 
 # Using service accounts for uploading to avoid user rate limit
@@ -70,4 +71,3 @@ python3 add_to_team_drive.py -d SharedTeamDriveSrcID
 - https://github.com/jagrit007
 - https://github.com/lzzy12/python-aria-mirror-bot
 - https://github.com/xyou365/AutoRclone
-- and everyone that contributed in the above two. :)

@@ -30,7 +30,7 @@ def clean_name(name):
     return name
 
 class GoogleDriveHelper:
-    def __init__(self, name=None, listener=None):
+    def __init__(self, name=None, listener=None, GFolder_ID=GDRIVE_FOLDER_ID):
         self.__G_DRIVE_TOKEN_FILE = "token.pickle"
         # Check https://developers.google.com/drive/scopes for all available scopes
         self.__OAUTH_SCOPE = ['https://www.googleapis.com/auth/drive']
@@ -54,7 +54,7 @@ class GoogleDriveHelper:
         self.updater = None
         self.name = name
         self.update_interval = 3
-        self.gparentid = GDRIVE_FOLDER_ID
+        self.gparentid = self.getIdFromUrl(GFolder_ID)
 
     def cancel(self):
         self.is_cancelled = True
@@ -141,12 +141,16 @@ class GoogleDriveHelper:
         try:
             meta = self.__service.files().get(supportsAllDrives=True, fileId=file_id,
                                               fields="name,id,mimeType,size").execute()
+            dest_meta = self.__service.files().get(supportsAllDrives=True, fileId=self.gparentid,
+                                              fields="name,id,size").execute()
+            status.SetMainFolder(meta.get('name'), self.__G_DRIVE_DIR_BASE_DOWNLOAD_URL.format(meta.get('id')))
+            status.SetDestinationFolder(dest_meta.get('name'), self.__G_DRIVE_DIR_BASE_DOWNLOAD_URL.format(dest_meta.get('id')))
         except Exception as e:
             return f"{str(e).replace('>', '').replace('<', '')}"
         if meta.get("mimeType") == self.__G_DRIVE_DIR_MIME_TYPE:
-            dir_id = self.check_folder_exists(meta.get('name'), GDRIVE_FOLDER_ID)
+            dir_id = self.check_folder_exists(meta.get('name'), self.gparentid)
             if not dir_id:
-                dir_id = self.create_directory(meta.get('name'), GDRIVE_FOLDER_ID)
+                dir_id = self.create_directory(meta.get('name'), self.gparentid)
             try:
                 result = self.cloneFolder(meta.get('name'), meta.get('name'), meta.get('id'), dir_id, status, ignoreList)
             except Exception as e:
@@ -165,12 +169,12 @@ class GoogleDriveHelper:
                 msg += f' | <a href="{url}"> Index URL</a>'
         else:
             try:
-                file = self.check_file_exists(meta.get('id'), GDRIVE_FOLDER_ID)
+                file = self.check_file_exists(meta.get('id'), self.gparentid)
                 if file:
                     status.checkFileExist(True)
                 if not file:
                     status.checkFileExist(False)
-                    file = self.copyFile(meta.get('id'), GDRIVE_FOLDER_ID, status)
+                    file = self.copyFile(meta.get('id'), self.gparentid, status)
             except Exception as e:
                 if isinstance(e, RetryError):
                     LOGGER.info(f"Total Attempts: {e.last_attempt.attempt_number}")

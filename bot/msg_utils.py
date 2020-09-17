@@ -14,3 +14,6 @@ def sendMessage(text: str, bot, update: Update, parse_mode='HTMl'):
     return bot.send_message(update.message.chat_id,
                             reply_to_message_id=update.message.message_id,
                             text=text, parse_mode=parse_mode)
+
+
+#To-do: One clone message for all clones; clone cancel command 

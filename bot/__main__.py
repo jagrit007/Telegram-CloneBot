@@ -2,7 +2,8 @@ from telegram.ext import CommandHandler, run_async
 from bot.gDrive import GoogleDriveHelper
 from bot.fs_utils import get_readable_file_size
 from bot import LOGGER, dispatcher, updater, bot
-from bot.config import BOT_TOKEN, OWNER_ID
+from bot.config import BOT_TOKEN, OWNER_ID, GDRIVE_FOLDER_ID
+from bot.decorators import is_authorised, is_owner
 from telegram.error import TimedOut, BadRequest
 from bot.clone_status import CloneStatus
 from bot.msg_utils import deleteMessage, sendMessage
@@ -21,39 +22,34 @@ def start(update, context):
 @run_async
 def helper(update, context):
     sendMessage("Here are the available commands of the bot\n\n" \
-        "*Usage:* `/clone link`\n*Example:* \n1. `/clone https://drive.google.com/drive/u/1/folders/0AO-ISIXXXXXXXXXXXX`\n2. `/clone 0AO-ISIXXXXXXXXXXXX`" \
+        "*Usage:* `/clone <link> [DESTINATION_ID]`\n*Example:* \n1. `/clone https://drive.google.com/drive/u/1/folders/0AO-ISIXXXXXXXXXXXX`\n2. `/clone 0AO-ISIXXXXXXXXXXXX`" \
+            "\n*DESTIONATION_ID* is optional. It can be either link or ID to where you wish to store a particular clone." \
             "\n\nYou can also *ignore folders* from clone process by doing the following:\n" \
-                "`/clone FOLDER_ID id1,id2,id3`\n In this example: id1, id2 and id3 would get ignored from cloning\n" \
+                "`/clone <FOLDER_ID> [DESTINATION] [id1,id2,id3]`\n In this example: id1, id2 and id3 would get ignored from cloning\nDo not use <> or [] in actual message." \
                     "*Make sure to not put any space between commas (,).*\n" \
                         f"Source of this bot: [GitHub]({REPO_LINK})", context.bot, update, 'Markdown')
 
 
 @run_async
+@is_authorised
 def cloneNode(update,context):
-    if not update.message.from_user.id == OWNER_ID:
-        return
     args = update.message.text.split(" ")
     if len(args) > 1:
         link = args[1]
         try:
-            ignoreList = args[2].split(',')
+            ignoreList = args[-1].split(',')
         except IndexError:
             ignoreList = []
 
-        # It should look like:
-            # /clone FOLDER_LINK id1,id2,id3
-            # or
-            # /clone FOLDER_ID id1,id2,id3
-            # id1 id2 id3 would be ignored from cloning
-            # there should be no space between commas (,) 
-            # it is helpful when you are cloning a big folder again
-            # and you know some sub-folders are already fully cloned!
-            # if you read all this way, don't forget to follow me on github :D
-            # @jagrit007 / https://github.com/jagrit007
+        try:
+            DESTINATION_ID = args[2]
+        except IndexError:
+            DESTINATION_ID = GDRIVE_FOLDER_ID
+            # Usage: /clone <FolderToClone> <Destination> <IDtoIgnoreFromClone>,<IDtoIgnoreFromClone>
 
         msg = sendMessage(f"<b>Cloning:</b> <code>{link}</code>", context.bot, update)
         status_class = CloneStatus()
-        gd = GoogleDriveHelper()
+        gd = GoogleDriveHelper(GFolder_ID=DESTINATION_ID)
         sendCloneStatus(update, context, status_class, msg, link)
         result = gd.clone(link, status_class, ignoreList=ignoreList)
         deleteMessage(context.bot, msg)
@@ -69,7 +65,7 @@ def sendCloneStatus(update, context, status, msg, link):
     while not status.done():
         sleeper(3)
         try:
-            text=f'🔗 *Cloning:* `{link}`\n━━━━━━━━━━━━━━\n📁 *Current File:* `{status.get_name()}`\n⬆️ *Transferred*: `{status.get_size()}`'
+            text=f'🔗 *Cloning:* [{status.MainFolderName}]({status.MainFolderLink})\n━━━━━━━━━━━━━━\n🗃️ *Current File:* `{status.get_name()}`\n⬆️ *Transferred*: `{status.get_size()}`\n📁 *Destination:* [{status.DestinationFolderName}]({status.DestinationFolderLink})'
             if status.checkFileStatus():
                 text += f"\n🕒 *Checking Existing Files:* `{str(status.checkFileStatus())}`"
             if not text == old_text:
@@ -88,12 +84,12 @@ def sleeper(value, enabled=True):
     return
 
 @run_async
+@is_owner
 def sendLogs(update, context):
-    if update.effective_message.from_user.id == OWNER_ID:
-        with open('log.txt', 'rb') as f:
-            bot.send_document(document=f, filename=f.name,
-                          reply_to_message_id=update.message.message_id,
-                          chat_id=update.message.chat_id)
+    with open('log.txt', 'rb') as f:
+        bot.send_document(document=f, filename=f.name,
+                        reply_to_message_id=update.message.message_id,
+                        chat_id=update.message.chat_id)
 
 def main():
     LOGGER.info("Bot Started!")

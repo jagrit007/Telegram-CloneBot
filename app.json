@@ -27,6 +27,11 @@
       "value": "",
       "required": true
     },
+    "AUTHORISED_USERS" : {
+      "description": "List of user ids to allow bot access to. Note: Write within []",
+      "value": "[]",
+      "required": false
+    },
     "INDEX_URL": {
       "description": "(Optional) CloudFlare Workers Index Link from GDINDEX (dont put / at end)",
       "required": false
