@@ -41,10 +41,12 @@ def cloneNode(update,context):
         except IndexError:
             ignoreList = []
 
+        DESTINATION_ID = GDRIVE_FOLDER_ID
         try:
             DESTINATION_ID = args[2]
+            print(DESTINATION_ID)
         except IndexError:
-            DESTINATION_ID = GDRIVE_FOLDER_ID
+            pass
             # Usage: /clone <FolderToClone> <Destination> <IDtoIgnoreFromClone>,<IDtoIgnoreFromClone>
 
         msg = sendMessage(f"<b>Cloning:</b> <code>{link}</code>", context.bot, update)

@@ -1,11 +1,15 @@
 # Why?
 For all my friends using my TDs who now need to store everything in it instead of their Drive. [Need help?](https://t.me/tgclonebot)
 
+<p align="center">
+<img src="https://i.imgur.com/CXy0SPB.jpg" alt="drawing" width="270" height=585/>
+</p>
+
 ## Setting up config file (present in bot/config.py)
 - **BOT_TOKEN** : The telegram bot token that you get from @BotFather
 - **GDRIVE_FOLDER_ID** : This is the folder ID of the Google Drive Folder to which you want to clone.
 - **OWNER_ID** : The Telegram user ID (not username) of the owner of the bot (if you do not have that, send /id to @kelverbot )
-- **AUTHORISED_USERS** : The Telegram user IDs (not username) of people you wish to allow for bot access.It can also be group chat id.
+- **AUTHORISED_USERS** : The Telegram user IDs (not username) of people you wish to allow for bot access.It can also be group chat id. Write like: [123456, 4030394, -1003823820]
 - **IS_TEAM_DRIVE** : (Optional field) Set to True if GDRIVE_FOLDER_ID is from a Team Drive else False or Leave it empty.
 - **USE_SERVICE_ACCOUNTS**: (Optional field) (Leave empty if unsure) Whether to use service accounts or not. For this to work see  "Using service accounts" section below.
 - **INDEX_URL** : (Optional field) Refer to https://github.com/maple3142/GDIndex/ The URL should not have any trailing '/'

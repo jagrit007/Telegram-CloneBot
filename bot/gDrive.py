@@ -54,7 +54,10 @@ class GoogleDriveHelper:
         self.updater = None
         self.name = name
         self.update_interval = 3
-        self.gparentid = self.getIdFromUrl(GFolder_ID)
+        if not len(GFolder_ID) == 33 or not len(GFolder_ID) == 19:
+            self.gparentid = self.getIdFromUrl(GFolder_ID)
+        else:
+            self.gparentid = GFolder_ID
 
     def cancel(self):
         self.is_cancelled = True
@@ -80,7 +83,7 @@ class GoogleDriveHelper:
             return link.rsplit('=')[-1]
         if "view" in link:
             return link.rsplit('/')[-2]
-        if len(link) == 33:
+        if len(link) == 33 or len(link) == 19:
             return link
         parsed = urlparse.urlparse(link)
         return parse_qs(parsed.query)['id'][0]
