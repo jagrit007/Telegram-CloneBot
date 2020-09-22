@@ -5,6 +5,17 @@ For all my friends using my TDs who now need to store everything in it instead o
 <img src="https://i.imgur.com/CXy0SPB.jpg" alt="drawing" width="270" height=585/>
 </p>
 
+## Guide:
+- YouTube Guide: [Google Drive Clone Bot Set-Up Tutorial | Telegram Bot Setup Guide](https://www.youtube.com/watch?v=2r3_jR7SvUo&feature=youtu.be)
+  - Follow the above guide for Heroku.
+  - If you wish to run on a VPS, Do all the stuff I did on the VPS Terminal ;)
+  - Wish to run anywhere else? Follow the guide till the part where I download ZIP Archive from Repl.it. Use that zip on any device you'd like to run the bot on. 
+  - Don't forget to install requirements.txt
+    ```
+    pip3 install -r requirements.txt
+    ```
+- [Adding Service Accounts to Google Group/TeamDrive](https://youtu.be/pBfsmJhYr78)
+
 ## Setting up config file (present in bot/config.py)
 - **BOT_TOKEN** : The telegram bot token that you get from @BotFather
 - **GDRIVE_FOLDER_ID** : This is the folder ID of the Google Drive Folder to which you want to clone.
