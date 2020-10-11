@@ -29,10 +29,10 @@ def helper(update, context):
                     "*Make sure to not put any space between commas (,).*\n" \
                         f"Source of this bot: [GitHub]({REPO_LINK})", context.bot, update, 'Markdown')
 
-
+# TODO Cancel Clones with /cancel command.
 @run_async
 @is_authorised
-def cloneNode(update,context):
+def cloneNode(update, context):
     args = update.message.text.split(" ")
     if len(args) > 1:
         link = args[1]

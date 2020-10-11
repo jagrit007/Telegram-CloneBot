@@ -6,6 +6,7 @@ from bot import LOGGER
 
 import json
 import logging
+import re
 import requests
 import socket
 
@@ -75,19 +76,16 @@ class GoogleDriveHelper:
 
     @staticmethod
     def getIdFromUrl(link: str):
-        if "?usp=sharing" in link:
-            link = link.replace("?usp=sharing", "")
-        if "folders" in link or "file" in link:
-            return link.rsplit('/')[-1]
-        if "folderview?id=" in link:
-            return link.rsplit('=')[-1]
-        if "view" in link:
-            return link.rsplit('/')[-2]
-        if len(link) == 33 or len(link) == 19:
+        if len(link) in [33, 19]:
             return link
+        if "folders" in link or "file" in link:
+            regex = r"https://drive\.google\.com/(drive)?/?u?/?\d?/?(mobile)?/?(file)?(folders)?/?d?/(?P<id>[-\w]+)[?+]?/?(w+)?"
+            res = re.search(regex,link)
+            if res is None:
+                raise IndexError("GDrive ID not found.")
+            return res.group('id')
         parsed = urlparse.urlparse(link)
         return parse_qs(parsed.query)['id'][0]
-
 
     def switchServiceAccount(self):
         global SERVICE_ACCOUNT_INDEX
@@ -155,7 +153,7 @@ class GoogleDriveHelper:
             if not dir_id:
                 dir_id = self.create_directory(meta.get('name'), self.gparentid)
             try:
-                result = self.cloneFolder(meta.get('name'), meta.get('name'), meta.get('id'), dir_id, status, ignoreList)
+                self.cloneFolder(meta.get('name'), meta.get('name'), meta.get('id'), dir_id, status, ignoreList)
             except Exception as e:
                 if isinstance(e, RetryError):
                     LOGGER.info(f"Total Attempts: {e.last_attempt.attempt_number}")
@@ -201,7 +199,6 @@ class GoogleDriveHelper:
         q = f"'{folder_id}' in parents"
         files = []
         LOGGER.info(f"Syncing: {local_path}")
-        new_id = None
         while True:
             response = self.__service.files().list(supportsTeamDrives=True,
                                                    includeTeamDriveItems=True,
@@ -223,27 +220,21 @@ class GoogleDriveHelper:
                 if not current_dir_id:
                     current_dir_id = self.create_directory(file.get('name'), parent_id)
                 if not str(file.get('id')) in ignoreList:
-                    new_id = self.cloneFolder(file.get('name'), file_path, file.get('id'), current_dir_id, status, ignoreList)
+                    self.cloneFolder(file.get('name'), file_path, file.get('id'), current_dir_id, status, ignoreList)
                 else:
                     LOGGER.info("Ignoring FolderID from clone: " + str(file.get('id')))
             else:
                 try:
                     if not self.check_file_exists(file.get('name'), parent_id):
                         status.checkFileExist(False)
+                        self.copyFile(file.get('id'), parent_id, status)
                         self.transferred_size += int(file.get('size'))
-                        status.add_size(int(file.get('size')))
                         status.set_name(file.get('name'))
+                        status.add_size(int(file.get('size')))
                     else:
                         status.checkFileExist(True)
                 except TypeError:
                     pass
-                try:
-                    if not self.check_file_exists(file.get('name'), parent_id):
-                        self.copyFile(file.get('id'), parent_id, status)
-                        status.checkFileExist(False)
-                    else:
-                        status.checkFileExist(True)
-                    new_id = parent_id
                 except Exception as e:
                     if isinstance(e, RetryError):
                         LOGGER.info(f"Total Attempts: {e.last_attempt.attempt_number}")
@@ -251,7 +242,6 @@ class GoogleDriveHelper:
                     else:
                         err = e
                     LOGGER.error(err)
-        return new_id
 
     @retry(wait=wait_exponential(multiplier=2, min=3, max=6), stop=stop_after_attempt(15),
            retry=retry_if_exception_type(HttpError), before=before_log(LOGGER, logging.DEBUG))
