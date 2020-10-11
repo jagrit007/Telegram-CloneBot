@@ -27,6 +27,11 @@
       "value": "",
       "required": true
     },
+    "THREAD_COUNT": {
+      "description": "Suggested: CPU CORES * 2. Defaults to 4. Leave it to 4 if you have no idea.",
+      "value": "4",
+      "required": true
+    },
     "AUTHORISED_USERS" : {
       "description": "List of user ids to allow bot access to. Note: Write within [] and seperate with ,",
       "value": "[]",

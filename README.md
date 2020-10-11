@@ -1,4 +1,7 @@
-# Why?
+# ⚠️ This is ALPHA Branch!!!
+It is normal to face issues in this branch, since I lazily push all the code I write, without much cleanups. So, if you face issues, instead of complaining, support your issue with logs or screenshot in [Telegram Chat](https://t.me/tgclonebot) or open issues and mention that you used Alpha Branch.
+
+## Why?
 For all my friends using my TDs who now need to store everything in it instead of their Drive. [Need help?](https://t.me/tgclonebot)
 
 <p align="center">
@@ -24,6 +27,7 @@ For all my friends using my TDs who now need to store everything in it instead o
 - **IS_TEAM_DRIVE** : (Optional field) Set to True if GDRIVE_FOLDER_ID is from a Team Drive else False or Leave it empty.
 - **USE_SERVICE_ACCOUNTS**: (Optional field) (Leave empty if unsure) Whether to use service accounts or not. For this to work see  "Using service accounts" section below.
 - **INDEX_URL** : (Optional field) Refer to https://github.com/maple3142/GDIndex/ The URL should not have any trailing '/'
+- **THREAD_COUNT** : Number of threads to use in each clone. Default value: 4
 
 ## Getting Google OAuth API credential file
 
