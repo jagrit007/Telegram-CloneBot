@@ -248,7 +248,7 @@ class GoogleDriveHelper:
                                               fields="name,id,size").execute()
             status.SetDestinationFolder(dest_meta.get('name'), self.__G_DRIVE_DIR_BASE_DOWNLOAD_URL.format(dest_meta.get('id')))
         except Exception as e:
-            return f"{str(e)}"
+            return f"{str(e).replace('>', '').replace('<', '')}\nMake sure you have access to the file/folder! If using SA, make sure SA group is added to the source!"
         if meta.get("mimeType") == self.__G_DRIVE_DIR_MIME_TYPE:
             dir_id = self.check_folder_exists(meta.get('name'), self.gparentid)
             if not dir_id:
