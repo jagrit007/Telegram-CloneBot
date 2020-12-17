@@ -1,7 +1,7 @@
 from bot.fs_utils import get_readable_file_size
 
 class CloneStatus:
-    def __init__(self, size=0):
+    def __init__(self, driveObj, size=0):
         self.size = size
         self.name = ''
         self.status = False
@@ -10,6 +10,8 @@ class CloneStatus:
         self.MainFolderLink = ''
         self.DestinationFolderName = ''
         self.DestinationFolderLink = ''
+        self.driveObj = driveObj
+        self.folderID = None
 
 
     def get_size(self):
@@ -43,3 +45,10 @@ class CloneStatus:
     def SetDestinationFolder(self, folder_name, link):
         self.DestinationFolderName = folder_name
         self.DestinationFolderLink = link
+
+
+    def cancelClone(self):
+        # for thread in self.driveObj.threadsList:
+            # if thread.is_alive():
+        self.driveObj.cancelled = True
+                # will see about killing threads later (TO-DO)

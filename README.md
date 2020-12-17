@@ -88,5 +88,4 @@ python3 add_to_team_drive.py -d SharedTeamDriveSrcID
 
 ### Credits
 - https://github.com/jagrit007
-- https://github.com/lzzy12/python-aria-mirror-bot
-- https://github.com/xyou365/AutoRclone
+- https://github.com/xyou365/AutoRclone (for `add_to_team_drive.py` and `gen_sa_accounts.py`)

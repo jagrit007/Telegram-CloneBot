@@ -1,7 +1,7 @@
 from telegram.ext import CommandHandler, run_async
 from bot.gDrive import GoogleDriveHelper
 from bot.fs_utils import get_readable_file_size
-from bot import LOGGER, dispatcher, updater, bot
+from bot import LOGGER, dispatcher, updater, bot, CLONE_DICT
 from bot.config import BOT_TOKEN, OWNER_ID, GDRIVE_FOLDER_ID
 from bot.decorators import is_authorised, is_owner
 from telegram.error import TimedOut, BadRequest
@@ -33,6 +33,7 @@ def helper(update, context):
 @run_async
 @is_authorised
 def cloneNode(update,context):
+    global CLONE_DICT
     args = update.message.text.split(" ")
     if len(args) > 1:
         link = args[1]
@@ -50,8 +51,11 @@ def cloneNode(update,context):
             # Usage: /clone <FolderToClone> <Destination> <IDtoIgnoreFromClone>,<IDtoIgnoreFromClone>
 
         msg = sendMessage(f"<b>Cloning:</b> <code>{link}</code>", context.bot, update)
-        status_class = CloneStatus()
         gd = GoogleDriveHelper(GFolder_ID=DESTINATION_ID)
+        status_class = CloneStatus(gd)
+        folder_id = gd.getIdFromUrl(link)
+        CLONE_DICT[folder_id] = status_class
+        status_class.folderID = folder_id
         sendCloneStatus(update, context, status_class, msg, link)
         result = gd.clone(link, status_class, ignoreList=ignoreList)
         deleteMessage(context.bot, msg)
@@ -70,11 +74,12 @@ def sendCloneStatus(update, context, status, msg, link):
             text=f'🔗 *Cloning:* [{status.MainFolderName}]({status.MainFolderLink})\n━━━━━━━━━━━━━━\n🗃️ *Current File:* `{status.get_name()}`\n⬆️ *Transferred*: `{status.get_size()}`\n📁 *Destination:* [{status.DestinationFolderName}]({status.DestinationFolderLink})'
             if status.checkFileStatus():
                 text += f"\n🕒 *Checking Existing Files:* `{str(status.checkFileStatus())}`"
+            text += f"\n❌ /`cancel {status.folderID}`"
             if not text == old_text:
                 msg.edit_text(text=text, parse_mode="Markdown", timeout=200)
                 old_text = text
         except Exception as e:
-            LOGGER.error(e)
+            # LOGGER.error(e) # So people stop spamming me
             if str(e) == "Message to edit not found":
                 break
             sleeper(2)
@@ -93,16 +98,34 @@ def sendLogs(update, context):
                         reply_to_message_id=update.message.message_id,
                         chat_id=update.message.chat_id)
 
+@run_async
+@is_authorised
+def cancelClone(update, context):
+    args = update.message.text.split(" ")
+    if len(args) > 1:
+        uid = args[1]
+    else:
+        sendMessage("Please mention the ID of clone you want to cancel.", context.bot, update)
+        return
+    
+    cloneObj = CLONE_DICT[uid]
+    cloneObj.set_status(True)
+    cloneObj.cancelClone()
+    sendMessage("Clone should get cancelled now.", context.bot, update)
+
+
 def main():
     LOGGER.info("Bot Started!")
     clone_handler = CommandHandler('clone', cloneNode)
     start_handler = CommandHandler('start', start)
     help_handler = CommandHandler('help', helper)
     log_handler = CommandHandler('logs', sendLogs)
+    cancel_hander = CommandHandler('cancel', cancelClone)
     dispatcher.add_handler(log_handler)
     dispatcher.add_handler(start_handler)
     dispatcher.add_handler(clone_handler)
     dispatcher.add_handler(help_handler)
+    dispatcher.add_handler(cancel_hander)
     updater.start_polling()
 
 main()
