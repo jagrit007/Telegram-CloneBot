@@ -9,7 +9,7 @@ from bot.clone_status import CloneStatus
 from bot.msg_utils import deleteMessage, sendMessage
 import time
 
-REPO_LINK = "https://github.com/jagrit007/Telegram-CloneBot"
+REPO_LINK = "https://github.com/VIVEKTP/Telegram-CloneBot"
 # Soon to be used for direct updates from within the bot.
 
 @run_async
