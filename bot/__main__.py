@@ -74,7 +74,7 @@ def sendCloneStatus(update, context, status, msg, link):
             text=f'🔗 *Cloning:* [{status.MainFolderName}]({status.MainFolderLink})\n━━━━━━━━━━━━━━\n🗃️ *Current File:* `{status.get_name()}`\n⬆️ *Transferred*: `{status.get_size()}`\n📁 *Destination:* [{status.DestinationFolderName}]({status.DestinationFolderLink})'
             if status.checkFileStatus():
                 text += f"\n🕒 *Checking Existing Files:* `{str(status.checkFileStatus())}`"
-            text += f"\n❌ /`cancel {status.folderID}`"
+            text += f"\n❌ `/cancel {status.folderID}`"
             if not text == old_text:
                 msg.edit_text(text=text, parse_mode="Markdown", timeout=200)
                 old_text = text
