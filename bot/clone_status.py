@@ -38,8 +38,8 @@ class CloneStatus:
 
     def SetMainFolder(self, folder_name, link):
         self.MainFolderName = folder_name
-        self.MainFolderLink = text
+        self.MainFolderLink = link
 
     def SetDestinationFolder(self, folder_name, link):
         self.DestinationFolderName = folder_name
-        self.DestinationFolderLink = text
+        self.DestinationFolderLink = link
