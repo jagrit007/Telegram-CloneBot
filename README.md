@@ -44,15 +44,6 @@ python3 generate_drive_token.py
 python3 gen_sa_accounts.py --quick-setup 1 --new-only
 ```
 
-## Agregar cuentas a un grupo de google
-- Crea un grupo al que le puedas agregar las cuentas en [Google groups](https://groups.google.com/)
-- Para agregarlas a un grupo de google, imprime las cuentas creadas con el comando siguiente, se separaran de 10 en 10, copialas y pegalas en agregar usuarios en un grupo
-
-```
-python3 print_emails.py
-```
-- Despues agrega el grupo a la unidad compartida.
-
 ## Crear bot en telegram
 - Abrir la aplicacion de Telegram y buscamos @botfather o visitamos el link t.me/botfather
 - iniciamos y Creamos nuevo bot con.
@@ -72,6 +63,15 @@ python3 print_emails.py
 - **IS_TEAM_DRIVE** : (Solo si el ID de la carpeta esta en una unidad compartida) "True" si GDRIVE_FOLDER_ID es una unidad compartida si no es asi dejalo vacio.
 - **USE_SERVICE_ACCOUNTS**: le ponemos "True"
 - **INDEX_URL** : lo dejamos igual
+
+## Agregar cuentas a un grupo de google
+- Crea un grupo al que le puedas agregar las cuentas en [Google groups](https://groups.google.com/)
+- Para agregarlas a un grupo de google, imprime las cuentas creadas con el comando siguiente, se separaran de 10 en 10, copialas y pegalas en agregar usuarios en un grupo
+
+```
+python3 print_emails.py
+```
+- Despues agrega el grupo a la unidad compartida.
 
 ## Correr el bot y descargar los archivos
 - Corremos el bot con el comando
