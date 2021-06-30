@@ -1,5 +1,5 @@
 # Que es lo que hace el bot TelegramGdriveClonebot
-- Clonar carpetas copletas de gdrive a gdrive unidad compartida
+- Clonar carpetas completas de gdrive a gdrive unidad compartida
 - Podras compartir archivos de gran tamaño, como videos, peliculas, documentos comprimidos, etc.
 - Compartir todas tus carpetas facilmente
 - hacer un clon identico a los nombres de tus documentos sin que aparezca (copia de)
