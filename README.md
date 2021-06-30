@@ -18,7 +18,7 @@
 - Ve a [Google console](https://console.developers.google.com)
 - Crea un nuevo proyecto (uniqedumxbot), copiar el id del proyecto y guardarlo en un notepad
 - Damos click en el panel izquierdo en la pestaña Pantalla de consentimiento, seleccionamos "Externo" y le damos click en "crear", y despues crear otra vez. Despues en tipo de aplicacion seleccionamos "Publica" ,Introducimos un nombre y le damos guardar.
-- En el panel izquierdo seleccionamos biblioteca para ingresar a la libreria de APis,en el buscador ponemos "Drive" y la habilitamos, tambien "Service Usage API"
+- En el panel izquierdo seleccionamos biblioteca para ingresar a la libreria de APis,en el buscador ponemos "Drive" y la habilitamos, tambien "Service Usage API" y "dentity and Access Management"
 - Nos dirigimos a la pestaña de Credenciales , y en crear credenciales seleccionamos "ID de cliente de OAuth",En tipo de aplicacion seleccionamos "De escritorio" y colocamos un nombre , le damos click en crear.Descargamos las credenciales en formato json y guardandolas como "credentials.json".
 
 ## 2.Clonar el repositorio en replit.com
