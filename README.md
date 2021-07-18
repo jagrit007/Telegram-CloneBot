@@ -91,6 +91,7 @@ zip -r uniqedumxbot.zip *
 - Despues Subimos los archivos del bot al repositorio, checa bien la carpeta accounts ya que hay que subirla por partes (github solo acepta 99 archivos por subida)
 
 ## enviar repositorio a heroku y correr bot.
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://dashboard.heroku.com/new?template=https://github.com/abdiasriver/TelegramGdriveClonebot)
 - Nos vamos a [Heroku](https://dashboard.heroku.com/) y creamos una nueva app con el nombre deseado.
 - Bajamos a deployment method y seleccionamos github.
 - Conectamos nuestra cuenta de github y buscamos el repositorio creado del bot.
