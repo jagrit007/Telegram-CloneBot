@@ -1,88 +1,112 @@
-# Why?
-For all my friends using my TDs who now need to store everything in it instead of their Drive. [Need help?](https://t.me/tgclonebot)
+# Que es lo que hace el bot TelegramGdriveClonebot
+- Clonar carpetas completas de gdrive a gdrive unidad compartida
+- Podras compartir archivos de gran tamaño, como videos, peliculas, documentos comprimidos, etc.
+- Compartir todas tus carpetas facilmente
+- hacer un clon identico a los nombres de tus documentos sin que aparezca (copia de)
+- El clon se genera en segundos o minutos
+- utilizar cuentas de servicio de google para que sea rapido y sobrepasar los 750 Gb hasta 75 TB.
 
-<p align="center">
-<img src="https://i.imgur.com/CXy0SPB.jpg" alt="drawing" width="270" height=585/>
-</p>
+## Herramientas usadas
+- https://replit.com/  Tener cuenta en repit
+- https://dashboard.heroku.com/ Tener cuenta en heroku
+- https://console.developers.google.com tener cuenta gmail
+- https://groups.google.com/   Un grupo en google con gmail
+- https://web.telegram.org/   Tener telegram instalado en app o web
+- https://github.com/  Para pasar nuestro bot a heroku
 
-## Guide:
-- YouTube Guide: [Google Drive Clone Bot Set-Up Tutorial | Telegram Bot Setup Guide](https://www.youtube.com/watch?v=2r3_jR7SvUo&feature=youtu.be)
-  - Follow the above guide for Heroku.
-  - If you wish to run on a VPS, Do all the stuff I did on the VPS Terminal ;)
-  - Wish to run anywhere else? Follow the guide till the part where I download ZIP Archive from Repl.it. Use that zip on any device you'd like to run the bot on. 
-  - Don't forget to install requirements.txt
-    ```
-    pip3 install -r requirements.txt
-    ```
-- [Adding Service Accounts to Google Group/TeamDrive](https://youtu.be/pBfsmJhYr78)
+## 1.Crear nuevo proyecto, y  credenciales en console google
+- Ve a [Google console](https://console.developers.google.com)
+- Crea un nuevo proyecto (uniqedumxbot), copiar el id del proyecto y guardarlo en un notepad
+- Damos click en el panel izquierdo en la pestaña Pantalla de consentimiento, seleccionamos "Externo" y le damos click en "crear", y despues crear otra vez. Despues en tipo de aplicacion seleccionamos "Publica" ,Introducimos un nombre y le damos guardar.
+- En el panel izquierdo seleccionamos biblioteca para ingresar a la libreria de APis,en el buscador ponemos "Drive" y la habilitamos, tambien "Service Usage API" y "dentity and Access Management"
+- Nos dirigimos a la pestaña de Credenciales , y en crear credenciales seleccionamos "ID de cliente de OAuth",En tipo de aplicacion seleccionamos "De escritorio" y colocamos un nombre , le damos click en crear.Descargamos las credenciales en formato json y guardandolas como "credentials.json".
 
-## Setting up config file (present in bot/config.py)
-- **BOT_TOKEN** : The telegram bot token that you get from @BotFather
-- **GDRIVE_FOLDER_ID** : This is the folder ID of the Google Drive Folder to which you want to clone.
-- **OWNER_ID** : The Telegram user ID (not username) of the owner of the bot (if you do not have that, send /id to @kelverbot )
-- **AUTHORISED_USERS** : The Telegram user IDs (not username) of people you wish to allow for bot access.It can also be group chat id. Write like: [123456, 4030394, -1003823820]
-- **IS_TEAM_DRIVE** : (Optional field) Set to True if GDRIVE_FOLDER_ID is from a Team Drive else False or Leave it empty.
-- **USE_SERVICE_ACCOUNTS**: (Optional field) (Leave empty if unsure) Whether to use service accounts or not. For this to work see  "Using service accounts" section below.
-- **INDEX_URL** : (Optional field) Refer to https://github.com/maple3142/GDIndex/ The URL should not have any trailing '/'
-
-## Getting Google OAuth API credential file
-
-- Visit the [Google Cloud Console](https://console.developers.google.com/apis/credentials)
-- Go to the OAuth Consent tab, fill it, and save.
-- Go to the Credentials tab and click Create Credentials -> OAuth Client ID
-- Choose Other and Create.
-- Use the download button to download your credentials.
-- Move that file to the root of clone-bot, and rename it to credentials.json
-- Visit [Google API page](https://console.developers.google.com/apis/library)
-- Search for Drive and enable it if it is disabled
-- Finally, run the script to generate token file (token.pickle) for Google Drive:
+## 2.Clonar el repositorio en replit.com
+- En [Replit](https://replit.com/) damos click en new repl e importamos el repositorio desde github.
+- Seleccionamos phyton
+- En la consola introducimos el siguiente comando y damos enter para que se instalen los requerimientos.
 ```
-pip install google-api-python-client google-auth-httplib2 google-auth-oauthlib
+pip3 install -r requirements.txt
+```
+- Instalamos googleapiclient con el comando
+```
+pip install --upgrade google-api-python-client
+```
+## 3. Crear cuentas de servicio google
+- en replit subimos el archivo credentials.json
+- En la consola de repli introducimos el siguiente comando y damos enter
+```
 python3 generate_drive_token.py
 ```
-# Running
-- To run this bot (locally) (suggested)
+- Vamos al link generado,aceptamos los permisos y copiamos el codigo generado, lo pegamos en la consola y damos enter.
+- Despues el siguiente codigo a la consola y damos enter.
+```
+python3 gen_sa_accounts.py --quick-setup 1 --new-only
+```
+
+## Crear bot en telegram
+- Abrir la aplicacion de Telegram y buscamos @botfather o visitamos el link t.me/botfather
+- iniciamos y Creamos nuevo bot con.
+```
+/start
+/newbot
+```
+- Escoge un nombre para tu bot
+- Despues de eso te enviara tus datos: (t.me/YOURBOT) & el Token de acceso HTTP API
+- Copia el token generado y guardalo en el block de notas
+
+## Lo que tienes que cambiar en el archivo ( bot/config.py)
+- **BOT_TOKEN** : El token que te dio el bot que creaste.
+- **GDRIVE_FOLDER_ID** : el ID de la carpeta de la unidad compartida a donde se enviaran los archivos.
+- **OWNER_ID** : ID de usuario telegram:Para obtenerlo busca en telegram a @userinfobot y dale iniciar /start , te lanzara el ID.
+- **AUTHORISED_USERS** : Los ID de usuarios telegram o de un grupo telegram.: [123456, 4030394, -1003823820] para obtener el ID de tu grupo telegram agrega @GroupIDbot al grupo y dale /id
+- **IS_TEAM_DRIVE** : (Solo si el ID de la carpeta esta en una unidad compartida) "True" si GDRIVE_FOLDER_ID es una unidad compartida si no es asi dejalo vacio.
+- **USE_SERVICE_ACCOUNTS**: le ponemos "True"
+- **INDEX_URL** : lo dejamos igual
+
+## Agregar cuentas a un grupo de google
+- Crea un grupo al que le puedas agregar las cuentas en [Google groups](https://groups.google.com/)
+- Para agregarlas a un grupo de google, imprime las cuentas creadas con el comando siguiente, se separaran de 10 en 10, copialas y pegalas en agregar usuarios en un grupo
+
+```
+python3 print_emails.py
+```
+- Despues agrega el grupo a la unidad compartida.
+
+## Correr el bot y descargar los archivos
+- Corremos el bot con el comando
 ```
 python3 -m bot
 ```
-- Deploying to Heroku (Optional) (Not Suitable for very big Clones!)
-
-[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://dashboard.heroku.com/new?template=https://github.com/jagrit007/Telegram-CloneBot)
-
-- Please know that after using this button, your work isn't done. You gotta [clone heroku app](https://devcenter.heroku.com/articles/git-clone-heroku-app) and add credentials.json and token.pickle (By now you would know how to make it.) and this is the perfect time to generate service accounts if you wish to use them. After it's all done, [Push changes to Heroku (Step1-2 only).](https://docs.railsbridge.org/intro-to-rails/deploying_to_heroku_again)
-
-**Tip: Instead of using Termux or local machine, use [repl.it](https://repl.it/), atleast it won't throw any errors in installing Python requirements. From [repl.it](https://repl.it/) you could push to a private GitHub repo and attach that to Heroku.**
-
-
-# Using service accounts for uploading to avoid user rate limit
-For Service Account to work, you must set USE_SERVICE_ACCOUNTS=True in config file or environment variables
-Many thanks to [AutoRClone](https://github.com/xyou365/AutoRclone) for the scripts
-## Generating service accounts
-Step 1. Generate service accounts [What is service account](https://cloud.google.com/iam/docs/service-accounts)
----------------------------------
-Let us create only the service accounts that we need. 
-**Warning:** abuse of this feature is not the aim of autorclone and we do **NOT** recommend that you make a lot of projects, just one project and 100 sa allow you plenty of use, its also possible that overabuse might get your projects banned by google. 
-
+- Despues matamos el script presionando Ctrl+c en la consola e introducimos el comando, despues enter.
 ```
-Note: 1 service account can copy around 750gb a day, 1 project makes 100 service accounts so thats 75tb a day, for most users this should easily suffice. 
+py3clean .
 ```
-
-`python3 gen_sa_accounts.py --quick-setup 1 --new-only`
-
-A folder named accounts will be created which will contain keys for the service accounts created
-
-NOTE: If you have created SAs in past from this script, you can also just re download the keys by running:
+- Comprimimos y Descargamos como zip todos los archivos de repli a nuestra pc con este comando te aparecera un zip en la izquierda el cual le damos descargar.
 ```
-python3 gen_sa_accounts.py --download-keys project_id
+zip -r uniqedumxbot.zip *
 ```
+- descomprimimos en la pc
+- Creamos un nuevo repositorio en [github](https://github.com) con el nombre deseado como privado, si tenemos privados, si no pues publico.
+- Despues Subimos los archivos del bot al repositorio, checa bien la carpeta accounts ya que hay que subirla por partes (github solo acepta 99 archivos por subida)
 
-### Add all the service accounts to the Team Drive or folder
-- Run:
+## enviar repositorio a heroku y correr bot.
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://dashboard.heroku.com/new?template=https://github.com/abdiasriver/TelegramGdriveClonebot)
+- Nos vamos a [Heroku](https://dashboard.heroku.com/) y creamos una nueva app con el nombre deseado.
+- Bajamos a deployment method y seleccionamos github.
+- Conectamos nuestra cuenta de github y buscamos el repositorio creado del bot.
+- Activamos "automatic deploys" y bajamos para darle click en "deploy branch"
+- Nos vamos a la pestaña "overview" y damos en "configure dynos" y lo activamos seleccionando edit y activamos ,despues confirm.
+- Nos dirigimos a nuestro bot creado en telegram y le damos /start y veras la leyenda de inicio
+- listo ya puedes enviar carpetas a tu Unidad compartida,para ver como envia /help al bot
+
+## Como clonar carpetas a la unidad compartida.
+- En la carpeta que quieras clonar, dale compartir con, e introduce el correo del grupo alq ue agregaste las cuentas de servicios.
+- copia el ID de la carpeta.
+- En el bot en telegram agrega
 ```
-python3 add_to_team_drive.py -d SharedTeamDriveSrcID
+/clone IDdelacarpeta
 ```
 
-### Credits
-- https://github.com/jagrit007
-- https://github.com/lzzy12/python-aria-mirror-bot
-- https://github.com/xyou365/AutoRclone
+## Usar el bot en un grupo
+Agrega el bot al grupo telegram del que obtuviste el ID, y el cual agregaste a **AUTHORISED_USERS**
